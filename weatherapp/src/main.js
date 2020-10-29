@@ -3,7 +3,7 @@ const exphbs = require('express-handlebars');
 const weather = require('./weather.js');
 
 const app = express();
-const post = 3000;
+const post = process.env.PORT || 3000;
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
