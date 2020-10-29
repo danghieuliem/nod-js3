@@ -1,11 +1,12 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const weather = require('./weather.js');
-
+const path = require('path');
 const app = express();
 const post = process.env.PORT || 3000;
 
 app.engine('handlebars', exphbs());
+app.set('views', path.join(__dirname,"views"));
 app.set('view engine', 'handlebars');
 
 app.get('/', (req, res) => {
