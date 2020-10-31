@@ -25,15 +25,15 @@ app.get('/', (req, res) => {
         });
     }
 });
-app.get('/:woeid', (req, res) =>{
+app.get('/forecast/:woeid', (req, res) =>{
     const woeid = req.params.woeid;
     if(!woeid){
-        res.render("home", { woeid, error: "woeid noot found !"});
+        res.render("forecast", { woeid, error: "woeid noot found !"});
     }
     else {
         weather.searcheowid(woeid,(error,body)=>{
             if (error !== null) {
-                res.render('home', { error, woeid });
+                res.render('forecast', { error, woeid });
             }
             else {
                 res.render('forecast', { error, woeid, body });
