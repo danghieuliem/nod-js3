@@ -1,0 +1,23 @@
+<div id="body">
+    <div id="header">
+        <h1>Weather App</h1>
+        <a href="/"> << Go home</a>
+        <p>Search location for : <b>{{body.title}}</b></p>
+
+        {{#if error}}
+        <p>ERROR : <b>{{error}}</b></p>
+        {{/if}}
+
+    <div id="weathers">
+        {{#each body.weather}}
+        <div class="weatheronday"">
+        <b>{{applicable_date}}</b> <br>
+        <img src=" https://www.metaweather.com/static/img/weather/{{weather_state_abbr}}.svg" alt="">
+        <p> Weather   : {{weather_state_name}}</p> 
+        <p> Min temp  : {{min_temp}}°C </p> 
+        <p> Max temp  : {{max_temp}}°C </p> 
+        <p> Visibility: {{visibility}}% </p>    
+        </div>
+        {{/each}}
+    </div>
+</div>

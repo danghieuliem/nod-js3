@@ -13,29 +13,12 @@
         {{#if error}}
         <p>ERROR : <b>{{error}}</b></p>
         {{/if}}
-
-        {{#if location}}
+        {{#if body}}
         <ul class="location">
-            {{#each location}}
-            <li><a href="/?searchkey={{this}}">{{this}}</a></li>
+            {{#each body}}
+            <li><a href="/{{this.woeid}}">{{this.location}}</a></li>
             {{/each}}
         </ul>
         {{/if}}
-        {{#if body}}
     </div>
-
-
-    <div id="weathers">
-        {{#each body}}
-        <div class="weatheronday"">
-        <b>{{applicable_date}}</b> <br>
-        Weather   : {{weather_state_name}} <br>
-        Min temp  : {{min_temp}}°C <br>
-        Max temp  : {{max_temp}}°C <br>
-        Visibility: {{visibility}}% <br>
-        <img src=" https://www.metaweather.com/static/img/weather/{{weather_state_abbr}}.svg" alt="">
-        </div>
-        {{/each}}
-    </div>
-    {{/if}}
 </div>
