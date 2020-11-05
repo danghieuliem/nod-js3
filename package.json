@@ -1,6 +1,9 @@
 {
-  "scripts":{
-    "install" : "cd weatherapp/src",
-    "start" : "node weatherapp/src/main.js"
+  "scripts": {
+    "install": "cd weatherapp/src",
+    "start": "node weatherapp/src/main.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
