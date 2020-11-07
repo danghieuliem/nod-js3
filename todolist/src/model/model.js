@@ -1,4 +1,3 @@
-const { constants } = require("buffer");
 const fs = require("fs");
 const path = require("path");
 const DataDir = path.resolve(__dirname, "../../Data");
@@ -13,25 +12,27 @@ const createModel = (modelName) => {
             fs.mkdirSync(DataDir);
 
         if (!fs.existsSync(DataFile))
-            fs.writeFileSync(DataFile, "");
+            fs.writeFileSync(DataFile, []);
     })();
 
-    const addTask = ({ title, body }) => {
-        if (!validition({ title, body })) {
+    const addEntitie = (entitie) => {
+        if (!validition(entitie)) {
             return "null";
         }
         else {
-            task = {
+            entitie = {
                 id: Date.now().toString(),
-                title: title,
-                body: body,
+                title: entitie.title,
+                body: entitie.body,
                 createAt: new Date(),
+                completed: false,
+                completedAt: null
             };
-            return addData(task);
+            return addData(entitie);
         }
     }
 
-    const getAll = () => {
+    const getAllEntities = () => {
         try {
             const data = JSON.parse(fs.readFileSync(DataFile));
             return data;
@@ -41,44 +42,66 @@ const createModel = (modelName) => {
         }
     }
 
-    const addData = (task) => {
+    const addData = (entitie) => {
         if (!fs.existsSync(DataDir))
             fs.mkdirSync(DataDir, { recursive: true });
         try {
-            var data = getAll();
+            var data = getAllEntities();
             console.log(data);
-            console.log(task);
+            console.log(entitie);
 
             if (!data)
-                data = task;
+                data = [entitie];
             else
-                data = [...data, task];
+                data = [...data, entitie];
 
             fs.writeFileSync(DataFile, JSON.stringify(data));
-            return data;
+            return entitie;
         } catch (e) {
             console.log(e);
             return null;
         }
     }
 
-    const validition = ({ title, body }) => {
-        if (title === "" || body === "")
+    const validition = (entitie) => {
+        if (entitie.title === "" || entitie.body === "")
             return false;
         return true;
     }
 
     const getById = (id) => {
-        const data = getAll();
-        console.log(data);
-        const task = data.find((item) => item.id === id);
-        if (!task)
+        const data = getAllEntities();
+        const entitie = data.find((entitie) => entitie.id === id);
+        if (!entitie)
             return null;
         else
-            return task;
+            return entitie;
     }
 
-    return { addTask, getAll, getById };
+    const Update = (entitie) => {
+        var res = null;
+        var entities = getAllEntities();
+        entities.find((item)=>{
+            if(item.id !== entitie.id) return;
+
+            item.body = entitie.body || item.body;
+            item.title = entitie.title || item.title;
+            if(!item.completed && entitie.completed){
+                item.completed = true;
+                item.completedAt = new Date();
+            }
+            res = item;
+        });
+        try{
+            fs.writeFileSync(DataFile,JSON.stringify(entities));
+            return res;
+        }catch(e){
+            console.log(e);
+            return null;
+        }
+    }
+
+    return { addEntitie, getAllEntities, getById, Update };
 }
 
 module.exports = createModel;
