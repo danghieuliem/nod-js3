@@ -7,17 +7,18 @@ const createModel = (modelName) => {
 
     const DataFile = path.resolve(DataDir, modelName) + ".json";
 
-    (() => {
+    const INIT = (() => {
         if (!fs.existsSync(DataDir))
             fs.mkdirSync(DataDir);
 
         if (!fs.existsSync(DataFile))
             fs.writeFileSync(DataFile, []);
     })();
+    INIT;
 
     const addEntitie = (entitie) => {
         if (!validition(entitie)) {
-            return "null";
+            return null;
         }
         else {
             entitie = {
@@ -55,8 +56,10 @@ const createModel = (modelName) => {
             else
                 data = [...data, entitie];
 
+            INIT;
             fs.writeFileSync(DataFile, JSON.stringify(data));
-            return entitie;
+            
+            return [entitie];
         } catch (e) {
             console.log(e);
             return null;
@@ -75,7 +78,7 @@ const createModel = (modelName) => {
         if (!entitie)
             return null;
         else
-            return entitie;
+            return [entitie];
     }
 
     const Update = (entitie) => {
@@ -86,15 +89,21 @@ const createModel = (modelName) => {
 
             item.body = entitie.body || item.body;
             item.title = entitie.title || item.title;
+            
             if (!item.completed && entitie.completed) {
                 item.completed = true;
                 item.completedAt = new Date();
             }
+            else if (item.completed && !entitie.completed) {
+                item.completed = false;
+                item.completedAt = null;
+            }
+
             res = item;
         });
         try {
             fs.writeFileSync(DataFile, JSON.stringify(entities));
-            return res;
+            return [res];
         } catch (e) {
             console.log(e);
             return null;
@@ -107,22 +116,17 @@ const createModel = (modelName) => {
         entities.find((item) => {
             if (item.id !== id) return;
             res = item;
-            console.log(item);
-            console.log(entities[entities.length - 1]);
             item.id = entities[entities.length - 1].id;
-            item.title = entities[entities.length - 1].title;
             item.body = entities[entities.length - 1].body;
+            item.title = entities[entities.length - 1].title;
             item.createAt = entities[entities.length - 1].createAt;
             item.completed = entities[entities.length - 1].completed;
             item.completedAt = entities[entities.length - 1].completedAt;
-            console.log(item);
-            console.log(res);
-
         });
         entities.splice(entities.length - 1, 1);
         try {
             fs.writeFileSync(DataFile, JSON.stringify(entities));
-            return res;
+            return [res];
         } catch (e) {
             console.log(e);
             return null;
