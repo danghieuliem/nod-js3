@@ -69,7 +69,7 @@ const createModel = (modelName) => {
         return true;
     }
 
-    const getById = (id) => {
+    const getEntitieById = (id) => {
         const data = getAllEntities();
         const entitie = data.find((entitie) => entitie.id === id);
         if (!entitie)
@@ -81,27 +81,55 @@ const createModel = (modelName) => {
     const Update = (entitie) => {
         var res = null;
         var entities = getAllEntities();
-        entities.find((item)=>{
-            if(item.id !== entitie.id) return;
+        entities.find((item) => {
+            if (item.id !== entitie.id) return;
 
             item.body = entitie.body || item.body;
             item.title = entitie.title || item.title;
-            if(!item.completed && entitie.completed){
+            if (!item.completed && entitie.completed) {
                 item.completed = true;
                 item.completedAt = new Date();
             }
             res = item;
         });
-        try{
-            fs.writeFileSync(DataFile,JSON.stringify(entities));
+        try {
+            fs.writeFileSync(DataFile, JSON.stringify(entities));
             return res;
-        }catch(e){
+        } catch (e) {
             console.log(e);
             return null;
         }
     }
 
-    return { addEntitie, getAllEntities, getById, Update };
+    const deleteById = (id) => {
+        var res = null;
+        var entities = getAllEntities();
+        entities.find((item) => {
+            if (item.id !== id) return;
+            res = item;
+            console.log(item);
+            console.log(entities[entities.length - 1]);
+            item.id = entities[entities.length - 1].id;
+            item.title = entities[entities.length - 1].title;
+            item.body = entities[entities.length - 1].body;
+            item.createAt = entities[entities.length - 1].createAt;
+            item.completed = entities[entities.length - 1].completed;
+            item.completedAt = entities[entities.length - 1].completedAt;
+            console.log(item);
+            console.log(res);
+
+        });
+        entities.splice(entities.length - 1, 1);
+        try {
+            fs.writeFileSync(DataFile, JSON.stringify(entities));
+            return res;
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
+    }
+
+    return { addEntitie, getAllEntities, getEntitieById, Update, deleteById };
 }
 
 module.exports = createModel;

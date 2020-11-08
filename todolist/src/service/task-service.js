@@ -16,9 +16,14 @@ const upDate = (task) => {
     return model.Update(task);
 }
 
+const deleteTaskById= (id) =>{
+    return model.deleteById(id);
+}
+
 module.exports = {
     getAll,
     addTask,
     getTaskById,
-    upDate
+    upDate,
+    deleteTaskById
 }
