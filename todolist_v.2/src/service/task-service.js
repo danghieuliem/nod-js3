@@ -2,26 +2,24 @@ const Task = require("../models/taskModel");
 
 // const model = require("../model/model")("task");
 
-
-const addTask = ({ title, body }, Callback) => {
-    return Task
-        .create({ title, body })
-        .exec(Callback);
+const addTask = ({ title, body },) => {
+    return Task.create({ title, body });
 }
 
-const getAll = (Callback) => {
+const getAll = () => {
     return Task
         .find({})
-        .exec(Callback);
+        .exec();
 }
 
-const getTaskById = (id, Callback) => {
+const getTaskById = (id) => {
     return Task
         .findById(id)
-        .exec(Callback);
+        .exec();
 }
 
-const upDate = (task, Callback) => {
+const upDate = (task) => {
+    
     if (!task.completed)
         task.completedAt = null;
     else
@@ -29,13 +27,13 @@ const upDate = (task, Callback) => {
 
     return Task
         .findByIdAndUpdate(task.id, task)
-        .exec(Callback);
+        .exec();
 }
 
-const deleteTaskById = (id, Callback) => {
+const deleteTaskById = (id) => {
     return Task
         .findByIdAndDelete(id)
-        .exec(Callback);
+        .exec();
 }
 
 module.exports = {

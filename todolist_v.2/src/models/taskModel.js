@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
 
-
 //tao ra mot "doi tuong" gon thuoc tinh va kieu du lieu
 const TaskSchema = new mongoose.Schema({
     title : String,
     body : String,
-    createdAt :{ type: Date, default: Date.now },
+    createdAt :{ 
+        type: Date, 
+        required: true,
+        default: Date.now,
+    },
     completed : { type: Boolean, default: false },
     completedAt :{ type: Date, default: null }
 });

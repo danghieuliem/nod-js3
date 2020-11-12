@@ -27,48 +27,15 @@ app.use(express.json());
 app.get("/tasks/:id", (req, res) => {
     if (!req.params.id)
         return res.status(400).json({ message: "id is requestted" });
-    Task.getTaskById(
-        req.params.id,
-        (error, task) => {
-            if (error) {
-                console.log(error);
-                return null;
-            }
-            else {
-                return res.json(task);
-            }
-        }
-    );
+    Task.getTaskById(req.params.id)
+        .then((task) => { res.json(task) })
+        .catch((error) => res.status(500).send(error));
 });
 
-app.delete("/tasks/:id", (req, res) => {
-    if (!req.params.id)
-        return res.status(400).json({ message: "id is requestted" });
-
-    Task.deleteTaskById(
-        req.params.id,
-        (error, task) => {
-            if (error) {
-                console.log(error);
-                return null;
-            }
-            else {
-                return res.json(task);
-            }
-        }
-    );
-})
-
 app.get("/tasks", (req, res) => { //req = request, res = respon
-    const data = Task.getAll((error, tasks) => {
-        if (error) {
-            console.log(error);
-            return null;
-        }
-        else {
-            return res.json(tasks);
-        }
-    });
+    Task.getAll()
+        .then((tasks) => { res.json(tasks) })
+        .catch((error) => res.status(500).send(error));
 });
 
 app.post("/tasks", (req, res) => {
@@ -85,23 +52,14 @@ app.post("/tasks", (req, res) => {
         if (!title || typeof (title) !== "string")
             return res.status(400).json({ message: "title is requested and its type is string" });
 
-        const createdTask = Task.addTask(
-            { title, body },
-            (error, newTask) => {
-                if (error) {
-                    console.log(error);
-                    return null;
-                }
-                else {
-                    return res.json(newTask);
-                }
-            }
-        );
+        Task.addTask({ title, body })
+            .then((task) => res.json(task))
+            .catch((error) => res.status(500).send(error));
     }
 });
 
 app.patch("/tasks", (req, res) => {
-    const { _id, title, body, completed, completedAt } = req.body;
+    const { _id, title, body, completed, completedAt, createdAt } = req.body;
     const id = _id;
     if (!id)
         return res.status(400).json({ message: "id is requestted" });
@@ -113,20 +71,20 @@ app.patch("/tasks", (req, res) => {
         && completed != true) {
         return res.status(420).json({ message: "completed is not boolean" });
     }
-
-    Task.upDate(
-        { id, title, body, completed, completedAt },
-        (error, task) => {
-            if (error) {
-                console.log(error);
-                return null;
-            }
-            else {
-                return res.json(task);
-            }
-        }
-    );
+    
+    Task.upDate({id, title, body, completed, completedAt,createdAt})
+        .then((task) => { res.json(task) })
+        .catch((error) => res.status(500).send(error));
 });
+
+app.delete("/tasks/:id", (req, res) => {
+    if (!req.params.id)
+        return res.status(400).json({ message: "id is requestted" });
+
+    Task.deleteTaskById(req.params.id)
+        .then((task) => { res.json(task) })
+        .catch((error) => res.status(500).send(error));
+})
 
 app.listen(port, () => {
     console.log("http://localhost:" + port);
