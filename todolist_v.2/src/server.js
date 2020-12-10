@@ -1,6 +1,9 @@
 const express = require("express");
-const Task = require("./service/task-service");
 const mongoose = require("mongoose");
+const path = require("path");
+
+const router = require("./routes");
+
 const app = express();
 const port = process.env.port || 3000;
 
@@ -10,81 +13,82 @@ const port = process.env.port || 3000;
  */
 
 mongoose.connect(
-    "mongo mongodb://localhost:27017/todo-app",
-    { useNewUrlParser: true }
+    "mongodb+srv://danghieuliem:01682210219@cluster0.cnzq3.mongodb.net/todo-app?retryWrites=true&w=majority", { useNewUrlParser: true }
 )
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
 db.once("open", () => {
     console.log("Connetd to MongoDB");
-})
+});
 //*************** */
-
 
 app.use(express.json());
 
-app.get("/tasks/:id", (req, res) => {
-    if (!req.params.id)
-        return res.status(400).json({ message: "id is requestted" });
-    Task.getTaskById(req.params.id)
-        .then((task) => { res.json(task) })
-        .catch((error) => res.status(500).send(error));
-});
+app.use(express.static(path.join(__dirname, "web")));
 
-app.get("/tasks", (req, res) => { //req = request, res = respon
-    Task.getAll()
-        .then((tasks) => { res.json(tasks) })
-        .catch((error) => res.status(500).send(error));
-});
+app.use("/api", router);
 
-app.post("/tasks", (req, res) => {
-    if (Array.isArray(req.body)) {
-        // let createdTask = [];
-        // req.body.forEach(element => {
-        //     const { title, body } = element;
-        //     createdTask = [...createdTask,Task.addTask({ title, body })];
-        // });
-        // res.json(createdTask);
-    }
-    else {
-        const { title, body } = req.body;
-        if (!title || typeof (title) !== "string")
-            return res.status(400).json({ message: "title is requested and its type is string" });
+// app.get("/tasks/:id", (req, res) => {
+//     if (!req.params.id)
+//         return res.status(400).json({ message: "id is requestted" });
+//     Task.getTaskById(req.params.id)
+//         .then((task) => { res.json(task) })
+//         .catch((error) => res.status(500).send(error));
+// });
 
-        Task.addTask({ title, body })
-            .then((task) => res.json(task))
-            .catch((error) => res.status(500).send(error));
-    }
-});
+// app.get("/tasks", (req, res) => { //req = request, res = respon
+//     Task.getAll()
+//         .then((tasks) => { res.json(tasks) })
+//         .catch((error) => res.status(500).send(error));
+// });
 
-app.patch("/tasks", (req, res) => {
-    const { _id, title, body, completed, completedAt, createdAt } = req.body;
-    const id = _id;
-    if (!id)
-        return res.status(400).json({ message: "id is requestted" });
+// app.post("/tasks", (req, res) => {
+//     if (Array.isArray(req.body)) {
+//         // let createdTask = [];
+//         // req.body.forEach(element => {
+//         //     const { title, body } = element;
+//         //     createdTask = [...createdTask,Task.addTask({ title, body })];
+//         // });
+//         // res.json(createdTask);
+//     } else {
+//         const { title, body } = req.body;
+//         if (!title || typeof(title) !== "string")
+//             return res.status(400).json({ message: "title is requested and its type is string" });
 
-    if (!title && !body && !completed && !completedAt)
-        return res.status(420).json({ message: "not thing to update" });
+//         Task.addTask({ title, body })
+//             .then((task) => res.json(task))
+//             .catch((error) => res.status(500).send(error));
+//     }
+// });
 
-    if (completed != false
-        && completed != true) {
-        return res.status(420).json({ message: "completed is not boolean" });
-    }
-    
-    Task.upDate({id, title, body, completed, completedAt,createdAt})
-        .then((task) => { res.json(task) })
-        .catch((error) => res.status(500).send(error));
-});
+// app.patch("/tasks", (req, res) => {
+//     const { _id, title, body, completed, completedAt, createdAt } = req.body;
+//     const id = _id;
+//     if (!id)
+//         return res.status(400).json({ message: "id is requestted" });
 
-app.delete("/tasks/:id", (req, res) => {
-    if (!req.params.id)
-        return res.status(400).json({ message: "id is requestted" });
+//     if (!title && !body && !completed && !completedAt)
+//         return res.status(420).json({ message: "not thing to update" });
 
-    Task.deleteTaskById(req.params.id)
-        .then((task) => { res.json(task) })
-        .catch((error) => res.status(500).send(error));
-})
+//     if (completed != false &&
+//         completed != true) {
+//         return res.status(420).json({ message: "completed is not boolean" });
+//     }
+
+//     Task.upDate({ id, title, body, completed, completedAt, createdAt })
+//         .then((task) => { res.json(task) })
+//         .catch((error) => res.status(500).send(error));
+// });
+
+// app.delete("/tasks/:id", (req, res) => {
+//     if (!req.params.id)
+//         return res.status(400).json({ message: "id is requestted" });
+
+//     Task.deleteTaskById(req.params.id)
+//         .then((task) => { res.json(task) })
+//         .catch((error) => res.status(500).send(error));
+// })
 
 app.listen(port, () => {
     console.log("http://localhost:" + port);

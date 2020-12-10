@@ -1,3 +1,8 @@
+/**
+ * file nau cua phien ban cu khong dung nua
+ * :3
+ */
+
 const fs = require("fs");
 const path = require("path");
 const DataDir = path.resolve(__dirname, "../../Data");
@@ -19,8 +24,7 @@ const createModel = (modelName) => {
     const addEntitie = (entitie) => {
         if (!validition(entitie)) {
             return null;
-        }
-        else {
+        } else {
             entitie = {
                 id: Date.now().toString(),
                 title: entitie.title,
@@ -58,7 +62,7 @@ const createModel = (modelName) => {
 
             INIT;
             fs.writeFileSync(DataFile, JSON.stringify(data));
-            
+
             return entitie;
         } catch (e) {
             console.log(e);
@@ -89,12 +93,11 @@ const createModel = (modelName) => {
 
             item.body = entitie.body || item.body;
             item.title = entitie.title || item.title;
-            
+
             if (!item.completed && entitie.completed) {
                 item.completed = true;
                 item.completedAt = new Date();
-            }
-            else if (item.completed && !entitie.completed) {
+            } else if (item.completed && !entitie.completed) {
                 item.completed = false;
                 item.completedAt = null;
             }

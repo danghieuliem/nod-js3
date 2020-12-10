@@ -1,14 +1,16 @@
+const autho = require("../middleware/autho");
 const Task = require("../models/taskModel");
 
 // const model = require("../model/model")("task");
 
-const addTask = ({ title, body },) => {
-    return Task.create({ title, body });
+const addTask = ({ title, body, authorid }, ) => {
+    return Task.create({ title, body, authorid });
 }
 
-const getAll = () => {
+const getAll = (authorid) => {
+    //console.log(authorid);
     return Task
-        .find({})
+        .find({ authorid: authorid })
         .exec();
 }
 
@@ -19,7 +21,7 @@ const getTaskById = (id) => {
 }
 
 const upDate = (task) => {
-    
+
     if (!task.completed)
         task.completedAt = null;
     else
